@@ -1,4 +1,5 @@
 ﻿using API.DTOS;
+using API.Error;
 using AutoMapper;
 using Core.Entities.Products;
 using Core.Interfaces;
@@ -35,6 +36,8 @@ namespace API.Controllers
             return Ok(mapper.Map<List<Product>, List<ProductDto>>((List<Product>)products));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductDto>> getProductById(int id)
         {
             var Included = new SpecificationProductWithTypeAndBrands(id);
@@ -43,7 +46,7 @@ namespace API.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(400));
             }
             
             return Ok(mapper.Map<Product, ProductDto>(product));

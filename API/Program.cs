@@ -1,3 +1,4 @@
+using API.Extensions;
 using API.HelperInAPI;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -9,17 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+//builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddLogging();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfig();
+builder.Services.UseApplicationServiceAdd();
 
 builder.Services.AddDbContext<StoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
 var app = builder.Build();
 
 
@@ -27,10 +28,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
 }
-
+app.AddSwaggerConfigInApp();
+app.UseStatusCodePagesWithReExecute("error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthorization();
