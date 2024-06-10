@@ -89,8 +89,18 @@ namespace Infrastructure.Data
             //                        PictureUrl = product.PictureUrl, Price = product.Price , ProductBrandId = product.ProductBrandId,
             //                               ProductTypeId = product.ProductTypeId});
             //};
+            //Change any column decimal type to double 
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var properties = entityType.GetProperties()
+                                           .Where(p => p.ClrType == typeof(decimal));
 
-
+                foreach (var property in properties)
+                {
+                    // Change the type from decimal to double
+                    modelBuilder.Entity(entityType.ClrType).Property(property.Name).HasConversion<double>();
+                }
+            }
 
 
 

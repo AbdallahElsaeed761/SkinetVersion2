@@ -20,7 +20,13 @@ builder.Services.UseApplicationServiceAdd();
 
 builder.Services.AddDbContext<StoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddCors(options=>
+{
+    options.AddPolicy("CorsPolicy", po =>
+    {
+        po.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+    });
+});
 var app = builder.Build();
 
 
@@ -34,6 +40,7 @@ app.AddSwaggerConfigInApp();
 app.UseStatusCodePagesWithReExecute("error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

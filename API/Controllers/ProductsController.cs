@@ -29,11 +29,11 @@ namespace API.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> getProduct()
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> getProduct([FromQuery]ProductSpecparameters productSpecparameters)
         {
-            var Included = new SpecificationProductWithTypeAndBrands();
+            var Included = new SpecificationProductWithTypeAndBrands(productSpecparameters);
             var products =await productRepo.ListAllAsyncSpecification(Included);
-            return Ok(mapper.Map<List<Product>, List<ProductDto>>((List<Product>)products));
+            return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>((List<Product>)products));
         }
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
